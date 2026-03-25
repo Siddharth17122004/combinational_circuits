@@ -1,29 +1,34 @@
-# Compiler
+# ====== TOOLS ======
 IVERILOG = iverilog
 VVP = vvp
 
-# Files
-SRC = src/*.v
-TB = tb/*.v
-OUT = sim/output.vvp
+# ====== DIRECTORIES ======
+SRC_DIR = src
+TB_DIR  = tb
+SIM_DIR = sim
 
-# Default target
-all: run
+# ====== FILE SELECTION ======
+# usage: make run file=full_adder
+SRC = $(SRC_DIR)/$(file).v
+TB  = $(TB_DIR)/tb_$(file).v
+OUT = $(SIM_DIR)/$(file).vvp
 
-# Compile
-compile:
+# ====== DEFAULT ======
+all:
+	@echo "Usage: make run file=<circuit_name>"
+
+# ====== RUN SIMULATION ======
+run:
+	@mkdir -p $(SIM_DIR)
 	$(IVERILOG) -o $(OUT) $(SRC) $(TB)
-
-# Run simulation
-run: compile
 	$(VVP) $(OUT)
 
-# Clean
+# ====== CLEAN ======
 clean:
-	rm -f sim/*.vvp sim/*.vcd
+	rm -f $(SIM_DIR)/*.vvp $(SIM_DIR)/*.vcd
 
-# Git add + commit + push
+# ====== GIT PUSH ======
 push:
 	git add .
-	git commit -m "update"
+	git commit -m "$(m)"
 	git push
